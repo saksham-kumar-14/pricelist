@@ -8,31 +8,32 @@ function Content() {
     const [items, setItems] = useState([]);
     const [selectedField, setSelectedField] = useState(null);
     const [selectedIdx, setSelectedIdx] = useState(-1);
+    const [originalField, setOriginalField] = useState(null); // new
 
     const isDesktop = useMediaQuery('(min-width: 800px)');
     const isTablet = useMediaQuery('(min-width: 480px) and (max-width: 799px)');
     const isPhonePortrait = useMediaQuery('(max-width: 479px) and (orientation: portrait)');
     const isPhoneLandscape = useMediaQuery('(max-width: 812px) and (orientation: landscape)');
 
-    async function fetchItems() {
-        try {
-            const response = await fetch(BASE_URL);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            setItems(data);
-        } catch (error) {
-            console.error('Fetch error:', error);
-        }
-    }
-
     useEffect(() => {
+        async function fetchItems() {
+            try {
+                const response = await fetch(BASE_URL);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
+                setItems(data);
+            } catch (error) {
+                console.error('Fetch error:', error);
+            }
+        }
         fetchItems();
-    }, [BASE_URL]);
+    }, []);
 
     const handleFocus = (item) => {
         setSelectedField({ ...item });
+        setOriginalField({ ...item });
         setSelectedIdx(item.id);
     };
 
@@ -43,9 +44,23 @@ function Content() {
         }));
     };
 
-    async function editFields(){
+    async function editFields() {
+        if (!selectedField || !originalField) return;
+
+        // Only update if changes exist
+        const hasChanged = Object.keys(selectedField).some(
+            key => selectedField[key] !== originalField[key]
+        );
+        if (!hasChanged) return;
+
+        let newItems = []
+        items.map((e) => {
+            if(e.id === selectedIdx) newItems = [...newItems, selectedField];
+            else newItems = [...newItems, e];
+        })
+        setItems(newItems)
         try {
-            const url = `${BASE_URL}/${selectedIdx}`
+            const url = `${BASE_URL}/${selectedIdx}`;
             const response = await fetch(url, {
                 method: 'PUT',
                 headers: {
@@ -57,19 +72,16 @@ function Content() {
             if (!response.ok) {
                 throw new Error(`Error ${response.status}: ${response.statusText}`);
             }
-
             const result = await response.json();
-            fetchItems();
             return result;
         } catch (error) {
             console.error('PUT request failed:', error);
-            throw error;
         }
     }
 
     const handleBlur = () => {
         editFields();
-    }
+    };
 
     return (
         <div className="product-table">
@@ -108,7 +120,7 @@ function Content() {
                                 onChange={(ev) => handleChange('articleNo', ev.target.value)}
                                 onBlur={handleBlur}
                                 className="row-item article-no"
-                                value={isSelected ? selectedField.articleNo : e.articleNo}
+                                value={isSelected ? selectedField?.articleNo ?? '' : e.articleNo}
                             />
                         )}
                         <input
@@ -117,7 +129,7 @@ function Content() {
                             onChange={(ev) => handleChange('product', ev.target.value)}
                             onBlur={handleBlur}
                             className="row-item product-service"
-                            value={(isSelected ? selectedField.product : e.product).slice(0, 40)}
+                            value={(isSelected ? selectedField?.product ?? '' : e.product).slice(0, 40)}
                         />
                         {isDesktop && (
                             <input
@@ -126,7 +138,7 @@ function Content() {
                                 onChange={(ev) => handleChange('inPrice', ev.target.value)}
                                 onBlur={handleBlur}
                                 className="row-item in-price"
-                                value={isSelected ? selectedField.inPrice : e.inPrice}
+                                value={isSelected ? selectedField?.inPrice ?? '' : e.inPrice}
                             />
                         )}
                         <input
@@ -135,7 +147,7 @@ function Content() {
                             onChange={(ev) => handleChange('price', ev.target.value)}
                             onBlur={handleBlur}
                             className="row-item price"
-                            value={isSelected ? selectedField.price : e.price}
+                            value={isSelected ? selectedField?.price ?? '' : e.price}
                         />
                         {isDesktop && (
                             <>
@@ -145,7 +157,7 @@ function Content() {
                                     onChange={(ev) => handleChange('unit', ev.target.value)}
                                     onBlur={handleBlur}
                                     className="row-item unit"
-                                    value={isSelected ? selectedField.unit : e.unit}
+                                    value={isSelected ? selectedField?.unit ?? '' : e.unit}
                                 />
                                 <input
                                     type="number"
@@ -153,7 +165,7 @@ function Content() {
                                     onChange={(ev) => handleChange('inStock', ev.target.value)}
                                     onBlur={handleBlur}
                                     className="row-item in-stock"
-                                    value={isSelected ? selectedField.inStock : e.inStock}
+                                    value={isSelected ? selectedField?.inStock ?? '' : e.inStock}
                                 />
                                 <input
                                     type="text"
@@ -161,7 +173,7 @@ function Content() {
                                     onChange={(ev) => handleChange('desc', ev.target.value)}
                                     onBlur={handleBlur}
                                     className="row-item description"
-                                    value={(isSelected ? selectedField.desc : e.desc).slice(0, 40)}
+                                    value={(isSelected ? selectedField?.desc ?? '' : e.desc).slice(0, 40)}
                                 />
                             </>
                         )}
