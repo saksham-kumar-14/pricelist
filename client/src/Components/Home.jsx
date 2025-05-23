@@ -3,6 +3,7 @@ import '../styles/home.css'
 import Nav from './Navbar';
 import Sidebar from './SidebarComponent';
 import SearchNav from './SearchNav';
+import Content from './Content';
 
 function Home() {
     return (
