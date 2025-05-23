@@ -1,6 +1,5 @@
 import React from 'react'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import FlagIcon from '@mui/icons-material/Flag';
 import '../styles/nav.css'
 
 function Nav() {
@@ -28,4 +27,4 @@ function Nav() {
     )
 }
 
-export default Nav
+export default Nav;

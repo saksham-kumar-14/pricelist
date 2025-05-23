@@ -1,6 +1,6 @@
 import React from 'react';
 import '../styles/home.css'
-import Nav from './nav';
+import Nav from './Navbar';
 import Sidebar from './SidebarComponent';
 import SearchNav from './SearchNav';
 
