@@ -130,7 +130,7 @@
     }
 }
  /* Phones - Landscape */
-@media (max-width: 812px) and (orientation: landscape) {
+@media (max-width: 1000px) and (orientation: landscape) {
     .search-container{
         display: flex;
         flex-direction: column;
@@ -291,7 +291,7 @@
     }
 }
 /* Phones - Landscape */
-@media (max-width: 812px) and (orientation: landscape) {
+@media (max-width: 1000px) and (orientation: landscape) {
     .header-item.product-service, .row-item.product-service { width: 50vw; margin-right: 5vw;  }
     .header-item.price, .row-item.price {width: 20vw;}
     .product-table{

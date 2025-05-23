@@ -75,7 +75,7 @@
 }
 
 /* Phones - Landscape */
-@media (max-width: 812px) and (orientation: landscape) {
+@media (max-width: 1000px) and (orientation: landscape) {
     .sidebar{
         display: none;
     }
