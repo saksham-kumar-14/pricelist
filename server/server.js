@@ -14,6 +14,24 @@ fastify.get('/item', async (req, res) => {
     return items;
 });
 
+// update fields
+fastify.put('/item/:id', async (req, res) => {
+    const { id } = req.params;
+    const updates = req.body;
+
+    try {
+        const item = await PricelistItem.findByPk(id);
+        if (!item) {
+            return res.code(404).send({ message: 'Item not found' });
+        }
+        await item.update(updates);
+        return res.send(item);
+    } catch (error) {
+        req.log.error(error);
+        return res.code(500).send({ message: 'Error updating item' });
+    }
+});
+
 const PORT = process.env.SERVER_PORT
 const start = async () => {
     try {
