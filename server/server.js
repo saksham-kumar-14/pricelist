@@ -2,7 +2,9 @@ const fastify = require('fastify')({ logger: true });
 const cors = require('@fastify/cors');
 
 fastify.register(cors, {
-    origin: true
+    origin: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type'],
 });
 
 const sequelize = require('./sequelize');
@@ -10,7 +12,9 @@ const PricelistItem = require('./models/Item');
 
 // get all items
 fastify.get('/item', async (req, res) => {
-    const items = await PricelistItem.findAll();
+    const items = await PricelistItem.findAll({
+        order: [['id', 'ASC']]
+    });
     return items;
 });
 
